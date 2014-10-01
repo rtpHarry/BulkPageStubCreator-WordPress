@@ -30,23 +30,6 @@ function bpsc_check_slug_for_error_level($slugRequested, $slugReturned) {
 			return "url-alternative-was-used";
 	}
 	
-/*	// TODO: DELETE THIS SECTION IF NOT USED BEFORE v1.0 LAUNCH
-	if((strcmp($slugRequested, $slugSanitized) != 0) 
-		&& (strcmp($slugRequested, $slugReturned) != 0)) {
-			// requested slug was invalid and sanitized
-			return "url-was-not-sanitized-and-sanitized-was-in-use";
-	}
-	
-	if(strcmp($slugRequested, $slugSanitized) != 0){
-		// requested slug was not valid
-		return "url-was-not-sanitized";
-	}
-	
-	if(strcmp($slugRequested, $slugReturned) != 0) {
-		// sanitized slug was already in use
-		return "url-in-use";
-	}*/
-	
 	// request slug was used for post
 	return "none";
 }
