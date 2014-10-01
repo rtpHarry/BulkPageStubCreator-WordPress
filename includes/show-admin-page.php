@@ -54,6 +54,9 @@ function bpsc_display_admin_page($isUnevenInputsError = NULL, $input = NULL) {
 	ob_start(); ?>
     <div class="wrap">
     	<h2><div id="icon-edit-pages" class="icon32"></div> Bulk Page Stub Creator</h2>
+        <?php if($BPSC_DEBUG) { ?>
+	        <div style="background: #E7373A; color: #fff; padding: 10px; font-weight: bold;">WARNING - $BPSC_DEBUG = true; - disable before deploying</div>
+        <?php } ?>        
         <p><?php _e("Enter the pages into the text area below, one line for the page title, one line for the url, then repeat for as many page stubs that you want to create."); ?></p>
         <h4>Example</h4>
         <pre>Some Page
@@ -71,7 +74,7 @@ contact-this-company</pre>
             <?php if($isUnevenInputsError) { ?>
             <strong style='color: #ff0000;'>ERROR:</strong> You have not supplied an even number of inputs.</p>
             <?php } ?>
-            <textarea id="bpsc_pagestocreate" name="bpsc_pagestocreate" rows="20" cols="100"><?php if($isUnevenInputsError == true) { echo $input; } elseif ($BPSC_DEBUG == true) { ?>Some Page
+            <textarea id="bpsc_pagestocreate" name="bpsc_pagestocreate" rows="20" class="large-text code"><?php if($isUnevenInputsError == true) { echo $input; } elseif ($BPSC_DEBUG == true) { ?>Some Page
 optimised-url-for-some-page
 Another Page Title Here
 custom-url-for-another-page
@@ -79,7 +82,6 @@ Site Map
 site-map
 Contact Us
 contact-this-company<?php } ?></textarea>
-is error? <?php echo $BPSC_DEBUG; ?>
         </p>
         <p>
         	<input class="button-primary" type="submit" name="save" value='<?php _e("Create page stubs"); ?>' id="submitbutton" />
