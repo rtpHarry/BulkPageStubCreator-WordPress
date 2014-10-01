@@ -10,6 +10,7 @@
 */
 
 
-include ('includes/show-admin-page.php'); // admin page code
+include ('includes/process-data.php');		// code to bulk create pages & return results
+include ('includes/show-admin-page.php'); 	// admin page display logic
 
 ?>

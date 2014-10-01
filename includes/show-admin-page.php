@@ -1,63 +1,21 @@
 <?php
+$BPSC_DEBUG = true;
 
-function bsps_create_result_array_element($error_level, $post_title, $post_name, $post_id) {
-	return array(
-			'error_level' => $error_level,
-			'post_title' => $post_title,
-			'post_name' => $post_name,
-			'post_id' => $post_id
-	);
+function bpsc_extract_info() {
+	$input = $_POST["bpsc_pagestocreate"]; // grab textarea contents 
+	$input = trim($input); // trim start and end
+	$extractedInfo = explode("\r\n", $input); // split into array
+	$extractedInfo = array_filter($extractedInfo); // trim empty lines out of array
+	return $extractedInfo;
 }
 
-function bsps_process_admin_page() {
-	// grab text area and split into array
-	$input = $_POST["bpsc_pagestocreate"];
-	$output = explode("\r\n", $input);
-	$results = array();
-
-	// TODO - update to use array format below		
-	// TODO - expand to check if lines % number of input fields and return error if not	
-	// TODO - format nicely
-	if((count($output) % 2) == 1) {
-		return array("ERROR: You have not supplied an even number of inputs");
-	}
-		
-	// bulk create pages
-	// TODO - validate urls (no preceeding slash)
-	for($i = 0, $size = count($output); $i < $size; $i = $i + 2) {
-		$postToAdd = array(
-			'post_title' => $output[$i],
-			'post_name' => $output[$i + 1],
-			'post_status' => 'publish',
-			'post_type' => 'page'
-		);
-		$lastPostID = wp_insert_post($postToAdd);
-				
-		if($lastPostID == 0) {
-			// log error
-			array_push($results, bsps_create_result_array_element(
-				"wp-insert-post-error", 
-				$postToAdd['post_title'], 
-				$postToAdd['post_name'], 
-				$lastPostID));			
-		}
-		else {
-			// log post details
-			$lastPost = get_post($lastPostID);
-						
-			array_push($results, bsps_create_result_array_element(
-				strcmp($postToAdd['post_name'], $lastPost->post_name) == 0 ? "none" : "url-in-use", 
-				$lastPost->post_title, 
-				$lastPost->post_name, 
-				$lastPostID));
-		}
-		
-	}
+function bpsc_process_admin_page($extractedInfo) {		
+	$results = bpsc_bulk_create_pages($extractedInfo);
 	
 	return $results;
 }
 
-function bsps_display_admin_results_page($results) {
+function bpsc_display_admin_results_page($results) {
 	// show output
 	ob_start(); ?>
     <div class="wrap">
@@ -68,8 +26,14 @@ function bsps_display_admin_results_page($results) {
 		<?php
 		foreach($results as $result)
 		{
-			$cssClass = $result['error_level'];// != "none" ? "errorclass" : "successclass";
-			echo '<a class="' . $cssClass . '" href="post.php?action=edit&post=' . $result['post_id'] . '">' . $result['post_title'] . "</a><br>";
+			$cssClass = $result['error_level'];
+			echo '<a target="_blank" class="' . $cssClass . '" href="post.php?action=edit&post=' . $result['post_id'] . '">' . $result['post_title'] . "</a>";
+			
+			if(strcmp($cssClass, "none") != 0) {
+				echo " (<strong style='color: #ff0000;'>ERROR:</strong> requested slug invalid or in use, page slug is: /" . $result['post_name'] . ")";
+			}
+			
+			echo "<br>";
 		}
 		?>
         </p>
@@ -84,7 +48,9 @@ function bsps_display_admin_results_page($results) {
 	echo ob_get_clean();   
 }
 
-function bsps_display_admin_page() {
+function bpsc_display_admin_page($isUnevenInputsError = NULL, $input = NULL) {
+	global $BPSC_DEBUG;
+	
 	ob_start(); ?>
     <div class="wrap">
     	<h2><div id="icon-edit-pages" class="icon32"></div> Bulk Page Stub Creator</h2>
@@ -102,7 +68,18 @@ contact-this-company</pre>
         <h4><?php _e("Bulk Create Pages"); ?></h4>
         <p>
         	<label class="description" for="bpsc_pagestocreate"><?php _e('Enter the site map data for the pages you want to create'); ?>:</label><br>
-            <textarea id="bpsc_pagestocreate" name="bpsc_pagestocreate" rows="20" cols="100"></textarea>
+            <?php if($isUnevenInputsError) { ?>
+            <strong style='color: #ff0000;'>ERROR:</strong> You have not supplied an even number of inputs.</p>
+            <?php } ?>
+            <textarea id="bpsc_pagestocreate" name="bpsc_pagestocreate" rows="20" cols="100"><?php if($isUnevenInputsError == true) { echo $input; } elseif ($BPSC_DEBUG == true) { ?>Some Page
+optimised-url-for-some-page
+Another Page Title Here
+custom-url-for-another-page
+Site Map
+site-map
+Contact Us
+contact-this-company<?php } ?></textarea>
+is error? <?php echo $BPSC_DEBUG; ?>
         </p>
         <p>
         	<input class="button-primary" type="submit" name="save" value='<?php _e("Create page stubs"); ?>' id="submitbutton" />
@@ -115,11 +92,18 @@ contact-this-company</pre>
 
 function bspc_admin_page() {
 	if ($_POST["bpsc_pagestocreate"]) {
-		$results = bsps_process_admin_page();
-		bsps_display_admin_results_page($results);
+		$extractedInfo = bpsc_extract_info();
+		
+		// check even number of inputs
+		if((count($extractedInfo) % 2) == 1) {
+			bpsc_display_admin_page(true, $_POST["bpsc_pagestocreate"]);
+		} else {		
+			$results = bpsc_process_admin_page($extractedInfo);
+			bpsc_display_admin_results_page($results);
+		}
 	}
 	else {
-		bsps_display_admin_page();
+		bpsc_display_admin_page();
 	}
 }
 
