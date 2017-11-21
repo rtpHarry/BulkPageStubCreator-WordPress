@@ -1,6 +1,6 @@
 <?php
 /*
-    BulkPageStubCreator-WordPress v1.0
+    BulkPageStubCreator-WordPress v1.1
     Copyright (C) 2014 Matthew Harris aka rtpHarry
 
     Bulk create page stubs by simply providing a plain text list of titles and slugs.
@@ -24,7 +24,7 @@
 $BPSC_DEBUG = false; // if set to true then the <textarea> is prepopulated with some sample data
 
 function bpsc_extract_info() {
-	$input = $_POST["bpsc_pagestocreate"]; // grab textarea contents 
+	$input = isset($_POST["bpsc_pagestocreate"]) ? $_POST["bpsc_pagestocreate"] : ''; // grab textarea contents 
 	$input = trim($input); // trim start and end
 	$extractedInfo = explode("\r\n", $input); // split into array
 	$extractedInfo = array_filter($extractedInfo); // trim empty lines out of array
@@ -115,7 +115,7 @@ contact-this-company<?php } ?></textarea>
 }
 
 function bspc_admin_page() {
-	if ($_POST["bpsc_pagestocreate"]) {
+	if (isset($_POST["bpsc_pagestocreate"])) {
 		$extractedInfo = bpsc_extract_info();
 		
 		// check even number of inputs
@@ -136,4 +136,3 @@ function bpsc_add_admin_page_link() {
 }
  
 add_action('admin_menu', 'bpsc_add_admin_page_link');
-?>

@@ -1,6 +1,6 @@
 <?php
 /*
-    BulkPageStubCreator-WordPress v1.0
+    BulkPageStubCreator-WordPress v1.1
     Copyright (C) 2014 Matthew Harris aka rtpHarry
 
     Bulk create page stubs by simply providing a plain text list of titles and slugs.
@@ -77,5 +77,3 @@ function bpsc_bulk_create_pages($extractedInfo) {
 	
 	return $results;
 }
-
-?>
