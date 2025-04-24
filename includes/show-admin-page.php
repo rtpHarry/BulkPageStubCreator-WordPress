@@ -33,17 +33,18 @@ function bpsc_extract_info() {
     
     // Just handle different line endings properly
     $input = str_replace(array("\r\n", "\r"), "\n", $input);
-    $extractedInfo = explode("\n", $input); // split into array
+    $extracted_info = explode("\n", $input); // split into array
     
-    return $extractedInfo;
+    return $extracted_info;
 }
 
-function bpsc_process_admin_page($extractedInfo) {
-    if (empty($extractedInfo)) {
+function bpsc_process_admin_page($extracted_info) {
+    // Add basic validation before processing
+    if (empty($extracted_info)) {
         return array();
     }
     
-    $results = bpsc_bulk_create_pages($extractedInfo);
+    $results = bpsc_bulk_create_pages($extracted_info);
     return $results;
 }
 
@@ -60,16 +61,16 @@ function bpsc_display_admin_results_page($results) {
             echo 'No pages were created. Please check your input and try again.';
         } else {
             foreach($results as $result) {
-                $cssClass = isset($result['error_level']) ? esc_attr($result['error_level']) : 'none';
-                $postId = isset($result['post_id']) ? intval($result['post_id']) : 0;
-                $postTitle = isset($result['post_title']) ? esc_html($result['post_title']) : '';
+                $css_class = isset($result['error_level']) ? esc_attr($result['error_level']) : 'none';
+                $post_id = isset($result['post_id']) ? intval($result['post_id']) : 0;
+                $post_title = isset($result['post_title']) ? esc_html($result['post_title']) : '';
                 
-                if ($postId > 0) {
-                    echo '<a target="_blank" class="' . $cssClass . '" href="' . 
-                         esc_url(admin_url('post.php?action=edit&post=' . $postId)) . 
-                         '">' . $postTitle . '</a>';
+                if ($post_id > 0) {
+                    echo '<a target="_blank" class="' . $css_class . '" href="' . 
+                         esc_url(admin_url('post.php?action=edit&post=' . $post_id)) . 
+                         '">' . $post_title . '</a>';
                     
-                    if (strcmp($cssClass, "none") != 0 && isset($result['post_name'])) {
+                    if (strcmp($css_class, "none") != 0 && isset($result['post_name'])) {
                         echo " (<strong style='color: #ff0000;'>ERROR:</strong> requested slug invalid or in use, page slug is: /" . 
                              esc_html($result['post_name']) . ")";
                     }
@@ -91,14 +92,14 @@ function bpsc_display_admin_results_page($results) {
     echo ob_get_clean();   
 }
 
-function bpsc_display_admin_page($isUnevenInputsError = NULL, $input = NULL) {
-	global $BPSC_DEBUG;
-	
-	ob_start(); ?>
+function bpsc_display_admin_page($is_uneven_inputs_error = NULL, $input = NULL) {
+    global $BPSC_DEBUG;
+    
+    ob_start(); ?>
     <div class="wrap">
-    	<h2><div id="icon-edit-pages" class="icon32"></div> Bulk Page Stub Creator</h2>
+        <h2><div id="icon-edit-pages" class="icon32"></div> Bulk Page Stub Creator</h2>
         <?php if($BPSC_DEBUG) { ?>
-	        <div style="background: #E7373A; color: #fff; padding: 10px; font-weight: bold;">WARNING - $BPSC_DEBUG = true; - disable before deploying</div>
+            <div style="background: #E7373A; color: #fff; padding: 10px; font-weight: bold;">WARNING - $BPSC_DEBUG = true; - disable before deploying</div>
         <?php } ?>        
         <p><?php _e("Enter the pages into the text area below, one line for the page title, one line for the url, then repeat for as many page stubs that you want to create."); ?></p>
         <h4>Example</h4>
@@ -113,11 +114,11 @@ contact-this-company</pre>
         <form method="post" action="">
         <h4><?php _e("Bulk Create Pages"); ?></h4>
         <p>
-        	<label class="description" for="bpsc_pagestocreate"><?php _e('Enter the site map data for the pages you want to create'); ?>:</label><br>
-            <?php if($isUnevenInputsError) { ?>
+            <label class="description" for="bpsc_pagestocreate"><?php _e('Enter the site map data for the pages you want to create'); ?>:</label><br>
+            <?php if($is_uneven_inputs_error) { ?>
             <strong style='color: #ff0000;'>ERROR:</strong> You have not supplied an even number of inputs.</p>
             <?php } ?>
-            <textarea id="bpsc_pagestocreate" name="bpsc_pagestocreate" rows="20" class="large-text code"><?php if($isUnevenInputsError == true) { echo $input; } elseif ($BPSC_DEBUG == true) { ?>Some Page
+            <textarea id="bpsc_pagestocreate" name="bpsc_pagestocreate" rows="20" class="large-text code"><?php if($is_uneven_inputs_error == true) { echo $input; } elseif ($BPSC_DEBUG == true) { ?>Some Page
 optimised-url-for-some-page
 Another Page Title Here
 custom-url-for-another-page
@@ -127,7 +128,7 @@ Contact Us
 contact-this-company<?php } ?></textarea>
         </p>
         <p>
-        	<input class="button-primary" type="submit" name="save" value='<?php _e("Create page stubs"); ?>' id="submitbutton" />
+            <input class="button-primary" type="submit" name="save" value='<?php _e("Create page stubs"); ?>' id="submitbutton" />
         </p>
         </form>
     </div>
@@ -136,20 +137,20 @@ contact-this-company<?php } ?></textarea>
 }
 
 function bspc_admin_page() {
-	if (isset($_POST["bpsc_pagestocreate"])) {
-		$extractedInfo = bpsc_extract_info();
-		
-		// check even number of inputs
-		if((count($extractedInfo) % 2) == 1) {
-			bpsc_display_admin_page(true, $_POST["bpsc_pagestocreate"]);
-		} else {		
-			$results = bpsc_process_admin_page($extractedInfo);
-			bpsc_display_admin_results_page($results);
-		}
-	}
-	else {
-		bpsc_display_admin_page();
-	}
+    if (isset($_POST["bpsc_pagestocreate"])) {
+        $extracted_info = bpsc_extract_info();
+        
+        // check even number of inputs
+        if((count($extracted_info) % 2) == 1) {
+            bpsc_display_admin_page(true, $_POST["bpsc_pagestocreate"]);
+        } else {        
+            $results = bpsc_process_admin_page($extracted_info);
+            bpsc_display_admin_results_page($results);
+        }
+    }
+    else {
+        bpsc_display_admin_page();
+    }
 }
 
 function bpsc_add_admin_page_link() {

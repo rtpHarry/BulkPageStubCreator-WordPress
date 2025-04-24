@@ -22,14 +22,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function bpsc_check_slug_for_error_level($slugRequested, $slugReturned) {
-	$slugRequested = sanitize_text_field($slugRequested);
-	$slugReturned = sanitize_text_field($slugReturned);
+function bpsc_check_slug_for_error_level($slug_requested, $slug_returned) {
+	$slug_requested = sanitize_text_field($slug_requested);
+	$slug_returned = sanitize_text_field($slug_returned);
 	
-	$slugSanitized = sanitize_title_with_dashes($slugRequested);
+	$slug_sanitized = sanitize_title_with_dashes($slug_requested);
 	
-	if((strcmp($slugRequested, $slugSanitized) != 0) 
-		|| (strcmp($slugRequested, $slugReturned) != 0)) {
+	if((strcmp($slug_requested, $slug_sanitized) != 0) 
+		|| (strcmp($slug_requested, $slug_returned) != 0)) {
 			// requested slug was not sanitized or was in use
 			return "url-alternative-was-used";
 	}
@@ -47,59 +47,59 @@ function bpsc_create_result_array_element($error_level, $post_title, $post_name,
 	);
 }
 
-function bpsc_bulk_create_pages($extractedInfo) {
+function bpsc_bulk_create_pages($extracted_info) {
 	$results = array();
 
-	if (!is_array($extractedInfo) || empty($extractedInfo)) {
+	if (!is_array($extracted_info) || empty($extracted_info)) {
 		return $results;
 	}
 
-	for($i = 0, $size = count($extractedInfo); $i < $size; $i = $i + 2) {
+	for($i = 0, $size = count($extracted_info); $i < $size; $i = $i + 2) {
 		// Ensure array indexes exist
-		if (!isset($extractedInfo[$i]) || !isset($extractedInfo[$i + 1])) {
+		if (!isset($extracted_info[$i]) || !isset($extracted_info[$i + 1])) {
 			continue;
 		}
 		
-		$postTitle = sanitize_text_field($extractedInfo[$i]);
-		$postName = sanitize_title($extractedInfo[$i + 1]);
+		$post_title = sanitize_text_field($extracted_info[$i]);
+		$post_name = sanitize_title($extracted_info[$i + 1]);
 		
-		$postToAdd = array(
-			'post_title' => $postTitle,
-			'post_name' => $postName,
+		$post_to_add = array(
+			'post_title' => $post_title,
+			'post_name' => $post_name,
 			'post_status' => 'publish',
 			'post_type' => 'page'
 		);
 		
-		$lastPostID = wp_insert_post($postToAdd);
+		$last_post_id = wp_insert_post($post_to_add);
 				
-		if($lastPostID == 0) {
+		if($last_post_id == 0) {
 			// log error
 			array_push($results, bpsc_create_result_array_element(
 				"wp-insert-post-error", 
-				$postToAdd['post_title'], 
-				$postToAdd['post_name'], 
-				$lastPostID));			
+				$post_to_add['post_title'], 
+				$post_to_add['post_name'], 
+				$last_post_id));			
 		}
 		else {
 			// log post details
-			$lastPost = get_post($lastPostID);
+			$last_post = get_post($last_post_id);
 			
-			if (!$lastPost) {
+			if (!$last_post) {
 				// Handle case where get_post fails
 				array_push($results, bpsc_create_result_array_element(
 					"get-post-error",
-					$postToAdd['post_title'],
-					$postToAdd['post_name'],
-					$lastPostID
+					$post_to_add['post_title'],
+					$post_to_add['post_name'],
+					$last_post_id
 				));
 				continue;
 			}
 						
 			array_push($results, bpsc_create_result_array_element(
-				bpsc_check_slug_for_error_level($postToAdd['post_name'], $lastPost->post_name),
-				$lastPost->post_title, 
-				$lastPost->post_name, 
-				$lastPostID));
+				bpsc_check_slug_for_error_level($post_to_add['post_name'], $last_post->post_name),
+				$last_post->post_title, 
+				$last_post->post_name, 
+				$last_post_id));
 		}		
 	}
 	
