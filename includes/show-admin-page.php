@@ -24,50 +24,71 @@
 $BPSC_DEBUG = false; // if set to true then the <textarea> is prepopulated with some sample data
 
 function bpsc_extract_info() {
-	$input = isset($_POST["bpsc_pagestocreate"]) ? $_POST["bpsc_pagestocreate"] : ''; // grab textarea contents 
-	$input = trim($input); // trim start and end
-	$extractedInfo = explode("\r\n", $input); // split into array
-	$extractedInfo = array_filter($extractedInfo); // trim empty lines out of array
-	return $extractedInfo;
+    // Sanitize and validate the textarea content
+    $input = '';
+    if (isset($_POST["bpsc_pagestocreate"])) {
+        // Use sanitize_textarea_field to properly handle the multiline input
+        $input = sanitize_textarea_field($_POST["bpsc_pagestocreate"]);
+    }
+    
+    // Just handle different line endings properly
+    $input = str_replace(array("\r\n", "\r"), "\n", $input);
+    $extractedInfo = explode("\n", $input); // split into array
+    
+    return $extractedInfo;
 }
 
-function bpsc_process_admin_page($extractedInfo) {		
-	$results = bpsc_bulk_create_pages($extractedInfo);
-	
-	return $results;
+function bpsc_process_admin_page($extractedInfo) {
+    if (empty($extractedInfo)) {
+        return array();
+    }
+    
+    $results = bpsc_bulk_create_pages($extractedInfo);
+    return $results;
 }
 
 function bpsc_display_admin_results_page($results) {
-	// show output
-	ob_start(); ?>
+    // show output
+    ob_start(); ?>
     <div class="wrap">
-    	<h2>Bulk Page Stub Creator</h2>
+        <h2>Bulk Page Stub Creator</h2>
         <h3>Bulk Page Creation Results</h3>
         <p>Page results listed below, click the links to edit the pages</p>
         <p>
-		<?php
-		foreach($results as $result)
-		{
-			$cssClass = $result['error_level'];
-			echo '<a target="_blank" class="' . $cssClass . '" href="post.php?action=edit&post=' . $result['post_id'] . '">' . $result['post_title'] . "</a>";
-			
-			if(strcmp($cssClass, "none") != 0) {
-				echo " (<strong style='color: #ff0000;'>ERROR:</strong> requested slug invalid or in use, page slug is: /" . $result['post_name'] . ")";
-			}
-			
-			echo "<br>";
-		}
-		?>
+        <?php
+        if (empty($results)) {
+            echo 'No pages were created. Please check your input and try again.';
+        } else {
+            foreach($results as $result) {
+                $cssClass = isset($result['error_level']) ? esc_attr($result['error_level']) : 'none';
+                $postId = isset($result['post_id']) ? intval($result['post_id']) : 0;
+                $postTitle = isset($result['post_title']) ? esc_html($result['post_title']) : '';
+                
+                if ($postId > 0) {
+                    echo '<a target="_blank" class="' . $cssClass . '" href="' . 
+                         esc_url(admin_url('post.php?action=edit&post=' . $postId)) . 
+                         '">' . $postTitle . '</a>';
+                    
+                    if (strcmp($cssClass, "none") != 0 && isset($result['post_name'])) {
+                        echo " (<strong style='color: #ff0000;'>ERROR:</strong> requested slug invalid or in use, page slug is: /" . 
+                             esc_html($result['post_name']) . ")";
+                    }
+                    
+                    echo "<br>";
+                }
+            }
+        }
+        ?>
         </p>
         
         <form method="post" action="">
         <p>
-        	<input class="button-primary" type="submit" name="save" value='<?php _e("Return to main page"); ?>' id="submitbutton" />
+            <input class="button-primary" type="submit" name="save" value="<?php esc_attr_e("Return to main page"); ?>" id="submitbutton" />
         </p>
         </form>        
     </div>
-	<?php
-	echo ob_get_clean();   
+    <?php
+    echo ob_get_clean();   
 }
 
 function bpsc_display_admin_page($isUnevenInputsError = NULL, $input = NULL) {
