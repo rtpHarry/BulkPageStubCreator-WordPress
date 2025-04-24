@@ -6,7 +6,7 @@ if (!defined('WPINC')) {
     die;
 }
 
-class Processor {    
+class Processor {
     /**
      * Check if the requested slug was successfully used or modified
      *
@@ -60,7 +60,7 @@ class Processor {
             return array(
                 $this->create_result_array_element(
                     'error-insufficient-permissions',
-                    esc_html__('Permission Denied'),
+                    __('Permission Denied', 'bulk-page-stub-creator'),
                     '',
                     0
                 )
@@ -107,8 +107,8 @@ class Processor {
                     // Handle case where get_post fails
                     array_push($results, $this->create_result_array_element(
                         "get-post-error",
-                        esc_html($post_to_add['post_title']),
-                        esc_html($post_to_add['post_name']),
+                        $post_to_add['post_title'],
+                        $post_to_add['post_name'],
                         $last_post_id
                     ));
                     continue;
