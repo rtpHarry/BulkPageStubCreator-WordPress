@@ -53,7 +53,7 @@ function bpsc_bulk_create_pages($extracted_info) {
         return array(
             bpsc_create_result_array_element(
                 'error-insufficient-permissions',
-                'Permission Denied',
+                esc_html__('Permission Denied'),
                 '',
                 0
             )
@@ -100,8 +100,8 @@ function bpsc_bulk_create_pages($extracted_info) {
 				// Handle case where get_post fails
 				array_push($results, bpsc_create_result_array_element(
 					"get-post-error",
-					$post_to_add['post_title'],
-					$post_to_add['post_name'],
+					esc_html($post_to_add['post_title']),
+					esc_html($post_to_add['post_name']),
 					$last_post_id
 				));
 				continue;

@@ -69,13 +69,13 @@ function bpsc_display_admin_results_page($results) {
     // show output
     ob_start(); ?>
     <div class="wrap">
-        <h2>Bulk Page Stub Creator</h2>
-        <h3>Bulk Page Creation Results</h3>
-        <p>Page results listed below, click the links to edit the pages</p>
+        <h2><?php esc_html_e('Bulk Page Stub Creator'); ?></h2>
+        <h3><?php esc_html_e('Bulk Page Creation Results'); ?></h3>
+        <p><?php esc_html_e('Page results listed below, click the links to edit the pages'); ?></p>
         <p>
         <?php
         if (empty($results)) {
-            echo 'No pages were created. Please check your input and try again.';
+            esc_html_e('No pages were created. Please check your input and try again.');
         } else {
             foreach($results as $result) {
                 $css_class = isset($result['error_level']) ? esc_attr($result['error_level']) : 'none';
@@ -88,8 +88,12 @@ function bpsc_display_admin_results_page($results) {
                          '">' . $post_title . '</a>';
                     
                     if (strcmp($css_class, "none") != 0 && isset($result['post_name'])) {
-                        echo " (<strong style='color: #ff0000;'>ERROR:</strong> requested slug invalid or in use, page slug is: /" . 
-                             esc_html($result['post_name']) . ")";
+                        printf(
+                            ' (<strong style="color: #ff0000;">%s</strong> %s /%s)',
+                            esc_html__('ERROR:'),
+                            esc_html__('requested slug invalid or in use, page slug is:'),
+                            esc_html($result['post_name'])
+                        );
                     }
                     
                     echo "<br>";
@@ -102,7 +106,7 @@ function bpsc_display_admin_results_page($results) {
         <form method="post" action="">
         <?php wp_nonce_field('bpsc_return_action', 'bpsc_return_nonce'); ?>
         <p>
-            <input class="button-primary" type="submit" name="save" value="<?php esc_attr_e("Return to main page"); ?>" id="submitbutton" />
+            <input class="button-primary" type="submit" name="save" value="<?php esc_attr_e('Return to main page'); ?>" id="submitbutton" />
         </p>
         </form>        
     </div>
@@ -118,45 +122,51 @@ function bpsc_display_admin_page($is_uneven_inputs_error = NULL, $input = NULL) 
     
     ob_start(); ?>
     <div class="wrap">
-        <h2><div id="icon-edit-pages" class="icon32"></div> Bulk Page Stub Creator</h2>
+        <h2><div id="icon-edit-pages" class="icon32"></div> <?php esc_html_e('Bulk Page Stub Creator'); ?></h2>
         <?php if(BPSC_DEBUG) { ?>
-            <div style="background: #E7373A; color: #fff; padding: 10px; font-weight: bold;">WARNING - BPSC_DEBUG = true; - disable before deploying</div>
+            <div style="background: #E7373A; color: #fff; padding: 10px; font-weight: bold;"><?php esc_html_e('WARNING - BPSC_DEBUG = true; - disable before deploying'); ?></div>
         <?php } ?>
         
-        <p><?php _e("Enter the pages into the text area below, one line for the page title, one line for the url, then repeat for as many page stubs that you want to create."); ?></p>
-        <h4>Example</h4>
-        <pre>Some Page
+        <p><?php esc_html_e("Enter the pages into the text area below, one line for the page title, one line for the url, then repeat for as many page stubs that you want to create."); ?></p>
+        <h4><?php esc_html_e('Example'); ?></h4>
+        <pre><?php echo esc_html("Some Page
 optimised-url-for-some-page
 Another Page Title Here
 custom-url-for-another-page
 Site Map
 site-map
 Contact Us
-contact-this-company</pre>
+contact-this-company"); ?></pre>
         <form method="post" action="">
         <?php wp_nonce_field('bpsc_create_pages_action', 'bpsc_create_pages_nonce'); ?>
-        <h4><?php _e("Bulk Create Pages"); ?></h4>
+        <h4><?php esc_html_e("Bulk Create Pages"); ?></h4>
         <p>
-            <label class="description" for="bpsc_pagestocreate"><?php _e('Enter the site map data for the pages you want to create'); ?>:</label><br>
+            <label class="description" for="bpsc_pagestocreate"><?php esc_html_e('Enter the site map data for the pages you want to create'); ?>:</label><br>
             <?php if($is_uneven_inputs_error) { ?>
-            <strong style='color: #ff0000;'>ERROR:</strong> You have not supplied an even number of inputs.</p>
+            <strong style='color: #ff0000;'><?php esc_html_e('ERROR:'); ?></strong> <?php esc_html_e('You have not supplied an even number of inputs.'); ?></p>
             <?php } ?>
-            <textarea id="bpsc_pagestocreate" name="bpsc_pagestocreate" rows="20" class="large-text code"><?php if($is_uneven_inputs_error == true) { echo $input; } elseif (BPSC_DEBUG == true) { ?>Some Page
+            <textarea id="bpsc_pagestocreate" name="bpsc_pagestocreate" rows="20" class="large-text code"><?php 
+                if($is_uneven_inputs_error == true) { 
+                    echo esc_textarea($input); 
+                } elseif (BPSC_DEBUG == true) { 
+                    echo esc_textarea("Some Page
 optimised-url-for-some-page
 Another Page Title Here
 custom-url-for-another-page
 Site Map
 site-map
 Contact Us
-contact-this-company<?php } ?></textarea>
+contact-this-company"); 
+                } 
+            ?></textarea>
         </p>
         <p>
-            <input class="button-primary" type="submit" name="save" value='<?php _e("Create page stubs"); ?>' id="submitbutton" />
+            <input class="button-primary" type="submit" name="save" value='<?php esc_attr_e("Create page stubs"); ?>' id="submitbutton" />
         </p>
         </form>
     </div>
-	<?php
-	echo ob_get_clean();    	
+    <?php
+    echo ob_get_clean();    	
 }
 
 function bspc_admin_page() {
