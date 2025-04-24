@@ -85,6 +85,7 @@ function bpsc_display_admin_results_page($results) {
         </p>
         
         <form method="post" action="">
+        <?php wp_nonce_field('bpsc_return_action', 'bpsc_return_nonce'); ?>
         <p>
             <input class="button-primary" type="submit" name="save" value="<?php esc_attr_e("Return to main page"); ?>" id="submitbutton" />
         </p>
@@ -113,6 +114,7 @@ site-map
 Contact Us
 contact-this-company</pre>
         <form method="post" action="">
+        <?php wp_nonce_field('bpsc_create_pages_action', 'bpsc_create_pages_nonce'); ?>
         <h4><?php _e("Bulk Create Pages"); ?></h4>
         <p>
             <label class="description" for="bpsc_pagestocreate"><?php _e('Enter the site map data for the pages you want to create'); ?>:</label><br>
@@ -138,7 +140,14 @@ contact-this-company<?php } ?></textarea>
 }
 
 function bspc_admin_page() {
+    // Verify nonce when processing form submissions
     if (isset($_POST["bpsc_pagestocreate"])) {
+        // Verify the nonce for page creation
+        if (!isset($_POST['bpsc_create_pages_nonce']) || 
+            !wp_verify_nonce($_POST['bpsc_create_pages_nonce'], 'bpsc_create_pages_action')) {
+            wp_die(__('Security check failed. Please try again.'));
+        }
+        
         $extracted_info = bpsc_extract_info();
         
         // check even number of inputs

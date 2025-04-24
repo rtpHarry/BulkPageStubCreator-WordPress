@@ -40,19 +40,19 @@ function bpsc_check_slug_for_error_level($slug_requested, $slug_returned) {
 
 function bpsc_create_result_array_element($error_level, $post_title, $post_name, $post_id) {
 	return array(
-			'error_level' => sanitize_text_field($error_level),
-			'post_title' => sanitize_text_field($post_title),
-			'post_name' => sanitize_text_field($post_name),
-			'post_id' => intval($post_id)
+		'error_level' => sanitize_text_field($error_level),
+		'post_title' => sanitize_text_field($post_title),
+		'post_name' => sanitize_text_field($post_name),
+		'post_id' => intval($post_id)
 	);
 }
 
 function bpsc_bulk_create_pages($extracted_info) {
-	$results = array();
+    $results = array();
 
-	if (!is_array($extracted_info) || empty($extracted_info)) {
-		return $results;
-	}
+    if (!is_array($extracted_info) || empty($extracted_info)) {
+        return $results;
+    }
 
 	for($i = 0, $size = count($extracted_info); $i < $size; $i = $i + 2) {
 		// Ensure array indexes exist
