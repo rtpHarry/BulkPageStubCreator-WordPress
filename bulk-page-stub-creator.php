@@ -1,4 +1,5 @@
 <?php
+
 /**
 * Plugin Name: Bulk Page Stub Creator
 * Plugin URI: http://articles.runtings.co.uk/p/bulk-page-stub-creator-wordpress.html
@@ -8,7 +9,6 @@
 * Author URI: http://articles.runtings.co.uk/
 * License: GPL3
 */
-
 
 /*
     BulkPageStubCreator-WordPress v1.1
@@ -31,6 +31,12 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+namespace RunthingsBulkPageStubCreator;
+
+if (!defined('WPINC')) {
+    die;
+}
 
 include ('includes/process-data.php');		// code to bulk create pages & return results
 include ('includes/show-admin-page.php'); 	// admin page display logic

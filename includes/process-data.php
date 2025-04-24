@@ -22,6 +22,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+namespace RunthingsBulkPageStubCreator;
+
+if (!defined('WPINC')) {
+    die;
+}
+
 function bpsc_check_slug_for_error_level($slug_requested, $slug_returned) {
 	$slug_requested = sanitize_text_field($slug_requested);
 	$slug_returned = sanitize_text_field($slug_returned);

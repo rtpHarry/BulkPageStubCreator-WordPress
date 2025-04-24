@@ -21,6 +21,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+namespace RunthingsBulkPageStubCreator;
+
+if (!defined('WPINC')) {
+    die;
+}
+
 if (!defined('BPSC_DEBUG')) {
     define('BPSC_DEBUG', false); // if set to true then the <textarea> is prepopulated with some sample data
 }
