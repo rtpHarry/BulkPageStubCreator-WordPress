@@ -26,6 +26,11 @@ if (!defined('BPSC_DEBUG')) {
 }
 
 function bpsc_extract_info() {
+    // Check user capabilities before processing any data
+    if (!current_user_can('publish_pages')) {
+        return array();
+    }
+    
     // Sanitize and validate the textarea content
     $input = '';
     if (isset($_POST["bpsc_pagestocreate"])) {
@@ -41,6 +46,11 @@ function bpsc_extract_info() {
 }
 
 function bpsc_process_admin_page($extracted_info) {
+    // Validate user capabilities
+    if (!current_user_can('publish_pages')) {
+        return array();
+    }
+    
     // Add basic validation before processing
     if (empty($extracted_info)) {
         return array();
@@ -51,6 +61,11 @@ function bpsc_process_admin_page($extracted_info) {
 }
 
 function bpsc_display_admin_results_page($results) {
+    // Verify permissions before displaying admin content
+    if (!current_user_can('publish_pages')) {
+        wp_die(__('You do not have sufficient permissions to access this page.'));
+    }
+    
     // show output
     ob_start(); ?>
     <div class="wrap">
@@ -96,6 +111,11 @@ function bpsc_display_admin_results_page($results) {
 }
 
 function bpsc_display_admin_page($is_uneven_inputs_error = NULL, $input = NULL) {
+    // Verify permissions before displaying admin content
+    if (!current_user_can('publish_pages')) {
+        wp_die(__('You do not have sufficient permissions to access this page.'));
+    }
+    
     ob_start(); ?>
     <div class="wrap">
         <h2><div id="icon-edit-pages" class="icon32"></div> Bulk Page Stub Creator</h2>
@@ -140,6 +160,11 @@ contact-this-company<?php } ?></textarea>
 }
 
 function bspc_admin_page() {
+    // Main capability check - verify user can access this admin page
+    if (!current_user_can('publish_pages')) {
+        wp_die(__('You do not have sufficient permissions to access this page.'));
+    }
+    
     // Verify nonce when processing form submissions
     if (isset($_POST["bpsc_pagestocreate"])) {
         // Verify the nonce for page creation
@@ -164,7 +189,8 @@ function bspc_admin_page() {
 }
 
 function bpsc_add_admin_page_link() {
-	add_management_page("Bulk Page Stub Creator", "Bulk Page Stub Creator", "publish_pages", "bulk-page-stub-creator", "bspc_admin_page");
+    // The capability check is already handled by the 3rd parameter in add_management_page()
+    add_management_page("Bulk Page Stub Creator", "Bulk Page Stub Creator", "publish_pages", "bulk-page-stub-creator", "bspc_admin_page");
 }
  
 add_action('admin_menu', 'bpsc_add_admin_page_link');

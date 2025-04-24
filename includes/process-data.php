@@ -48,6 +48,18 @@ function bpsc_create_result_array_element($error_level, $post_title, $post_name,
 }
 
 function bpsc_bulk_create_pages($extracted_info) {
+    // Validate user capabilities before performing operations
+    if (!current_user_can('publish_pages')) {
+        return array(
+            bpsc_create_result_array_element(
+                'error-insufficient-permissions',
+                'Permission Denied',
+                '',
+                0
+            )
+        );
+    }
+
     $results = array();
 
     if (!is_array($extracted_info) || empty($extracted_info)) {
