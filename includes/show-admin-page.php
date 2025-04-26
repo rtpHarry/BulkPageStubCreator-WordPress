@@ -42,11 +42,18 @@ class Admin {
             return array();
         }
         
+        // Since this method is only called after nonce verification in admin_page(),
+        // we don't need to verify the nonce again, but we'll add a check to be extra safe
+        if (!isset($_POST['bpsc_create_pages_nonce']) || 
+            !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['bpsc_create_pages_nonce'])), 'bpsc_create_pages_action')) {
+            return array();
+        }
+        
         // Sanitize and validate the textarea content
         $input = '';
         if (isset($_POST["bpsc_pagestocreate"])) {
             // Use sanitize_textarea_field to properly handle the multiline input
-            $input = sanitize_textarea_field($_POST["bpsc_pagestocreate"]);
+            $input = sanitize_textarea_field(wp_unslash($_POST["bpsc_pagestocreate"]));
         }
         
         // Just handle different line endings properly
@@ -85,7 +92,7 @@ class Admin {
     private function display_admin_results_page($results) {
         // Verify permissions before displaying admin content
         if (!current_user_can('publish_pages')) {
-            wp_die(__('You do not have sufficient permissions to access this page.', 'bulk-page-stub-creator'));
+            wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'bulk-page-stub-creator'));
         }
         
         // show output
@@ -105,9 +112,9 @@ class Admin {
                     $post_title = isset($result['post_title']) ? esc_html($result['post_title']) : '';
                     
                     if ($post_id > 0) {
-                        echo '<a target="_blank" class="' . $css_class . '" href="' . 
+                        echo '<a target="_blank" class="' . esc_attr($css_class) . '" href="' . 
                              esc_url(admin_url('post.php?action=edit&post=' . $post_id)) . 
-                             '">' . $post_title . '</a>';
+                             '">' . esc_html($post_title) . '</a>';
                         
                         if (strcmp($css_class, "none") != 0 && isset($result['post_name'])) {
                             printf(
@@ -133,7 +140,7 @@ class Admin {
             </form>        
         </div>
         <?php
-        echo ob_get_clean();   
+        echo wp_kses_post(ob_get_clean());   
     }
 
     /**
@@ -145,7 +152,7 @@ class Admin {
     private function display_admin_page($is_uneven_inputs_error = NULL, $input = NULL) {
         // Verify permissions before displaying admin content
         if (!current_user_can('publish_pages')) {
-            wp_die(__('You do not have sufficient permissions to access this page.', 'bulk-page-stub-creator'));
+            wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'bulk-page-stub-creator'));
         }
         
         ob_start(); ?>
@@ -196,7 +203,7 @@ contact-this-company");
             </form>
         </div>
         <?php
-        echo ob_get_clean();    	
+        echo wp_kses_post(ob_get_clean());    	
     }
 
     /**
@@ -205,22 +212,22 @@ contact-this-company");
     public function admin_page() {
         // Main capability check - verify user can access this admin page
         if (!current_user_can('publish_pages')) {
-            wp_die(__('You do not have sufficient permissions to access this page.', 'bulk-page-stub-creator'));
+            wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'bulk-page-stub-creator'));
         }
         
         // Verify nonce when processing form submissions
         if (isset($_POST["bpsc_pagestocreate"])) {
             // Verify the nonce for page creation
             if (!isset($_POST['bpsc_create_pages_nonce']) || 
-                !wp_verify_nonce($_POST['bpsc_create_pages_nonce'], 'bpsc_create_pages_action')) {
-                wp_die(__('Security check failed. Please try again.', 'bulk-page-stub-creator'));
+                !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['bpsc_create_pages_nonce'])), 'bpsc_create_pages_action')) {
+                wp_die(esc_html__('Security check failed. Please try again.', 'bulk-page-stub-creator'));
             }
             
             $extracted_info = $this->extract_info();
             
             // check even number of inputs
             if((count($extracted_info) % 2) == 1) {
-                $this->display_admin_page(true, $_POST["bpsc_pagestocreate"]);
+                $this->display_admin_page(true, sanitize_textarea_field(wp_unslash($_POST["bpsc_pagestocreate"])));
             } else {        
                 $results = $this->process_admin_page($extracted_info);
                 $this->display_admin_results_page($results);
