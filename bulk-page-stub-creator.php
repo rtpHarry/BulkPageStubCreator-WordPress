@@ -2,11 +2,11 @@
 
 /**
 * Plugin Name: Bulk Page Stub Creator
-* Plugin URI: http://articles.runtings.co.uk/p/bulk-page-stub-creator-wordpress.html
+* Plugin URI: https://github.com/rtpHarry/BulkPageStubCreator-WordPress
 * Description: Bulk create page stubs by simply providing a plain text list of titles and slugs.
 * Version: 1.1
 * Author: rtpHarry
-* Author URI: http://articles.runtings.co.uk/
+* Author URI: https://runthings.dev/
 * License: GPL3
 */
 
@@ -16,7 +16,7 @@
 
     Bulk create page stubs by simply providing a plain text list of titles and slugs.
 
-    http://articles.runtings.co.uk/p/bulk-page-stub-creator-wordpress.html
+    https://github.com/rtpHarry/BulkPageStubCreator-WordPress
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
