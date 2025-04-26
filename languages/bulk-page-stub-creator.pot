@@ -1,0 +1,111 @@
+# Copyright (C) 2025 rtpHarry
+# This file is distributed under the GPL3.
+msgid ""
+msgstr ""
+"Project-Id-Version: Bulk Page Stub Creator 1.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bulk-page-stub-creator\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2025-04-26T10:51:27+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.11.0\n"
+"X-Domain: bulk-page-stub-creator\n"
+
+#. Plugin Name of the plugin
+#: bulk-page-stub-creator.php
+#: includes/show-admin-page.php:112
+#: includes/show-admin-page.php:170
+#: includes/show-admin-page.php:248
+#: includes/show-admin-page.php:249
+msgid "Bulk Page Stub Creator"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: bulk-page-stub-creator.php
+msgid "https://github.com/rtpHarry/BulkPageStubCreator-WordPress"
+msgstr ""
+
+#. Description of the plugin
+#: bulk-page-stub-creator.php
+msgid "Bulk create page stubs by simply providing a plain text list of titles and slugs."
+msgstr ""
+
+#. Author of the plugin
+#: bulk-page-stub-creator.php
+msgid "rtpHarry"
+msgstr ""
+
+#. Author URI of the plugin
+#: bulk-page-stub-creator.php
+msgid "https://runthings.dev/"
+msgstr ""
+
+#: includes/process-data.php:63
+msgid "Permission Denied"
+msgstr ""
+
+#: includes/show-admin-page.php:107
+#: includes/show-admin-page.php:165
+#: includes/show-admin-page.php:216
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: includes/show-admin-page.php:113
+msgid "Bulk Page Creation Results"
+msgstr ""
+
+#: includes/show-admin-page.php:114
+msgid "Page results listed below, click the links to edit the pages"
+msgstr ""
+
+#: includes/show-admin-page.php:118
+msgid "No pages were created. Please check your input and try again."
+msgstr ""
+
+#: includes/show-admin-page.php:133
+#: includes/show-admin-page.php:188
+msgid "ERROR:"
+msgstr ""
+
+#: includes/show-admin-page.php:134
+msgid "requested slug invalid or in use, page slug is:"
+msgstr ""
+
+#: includes/show-admin-page.php:149
+msgid "Return to main page"
+msgstr ""
+
+#: includes/show-admin-page.php:173
+msgid "WARNING - Debug mode is enabled. Disable before deploying to production."
+msgstr ""
+
+#: includes/show-admin-page.php:177
+msgid "Enter the pages into the text area below, one line for the page title, one line for the url, then repeat for as many page stubs that you want to create."
+msgstr ""
+
+#: includes/show-admin-page.php:178
+msgid "Example"
+msgstr ""
+
+#: includes/show-admin-page.php:182
+msgid "Bulk Create Pages"
+msgstr ""
+
+#: includes/show-admin-page.php:184
+msgid "Enter the site map data for the pages you want to create"
+msgstr ""
+
+#: includes/show-admin-page.php:189
+msgid "You have not supplied an even number of inputs."
+msgstr ""
+
+#: includes/show-admin-page.php:203
+msgid "Create page stubs"
+msgstr ""
+
+#: includes/show-admin-page.php:224
+msgid "Security check failed. Please try again."
+msgstr ""

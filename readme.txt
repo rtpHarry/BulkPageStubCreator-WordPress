@@ -3,7 +3,7 @@ Contributors: rtpHarry, runthingsdev
 Tags: admin, developer
 Requires at least: 4.0
 Tested up to: 6.8
-Stable tag: 1.1
+Stable tag: 1.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -78,6 +78,10 @@ If this sounds like your workflow then this plugin could save you time!
 3. If WordPress finds that the requested slugs either were invalid or already in use it automatically renames the slug to a non-conflicting name.
 
 == Changelog ==
+
+= 1.2 =
+* 2025-04-26
+* Refactor to address reflected xss security issue raised
 
 = 1.1 =
 * 2017-11-21
