@@ -24,6 +24,18 @@ class Admin {
     private $processor;
     
     /**
+     * Demo content for the textarea example
+     */
+    const DEMO_CONTENT = "Some Page
+optimised-url-for-some-page
+Another Page Title Here
+custom-url-for-another-page
+Site Map
+site-map
+Contact Us
+contact-this-company";
+    
+    /**
      * Constructor
      */
     public function __construct() {
@@ -33,7 +45,7 @@ class Admin {
     
     /**
      * Extract info from the textarea input
-     *
+     * 
      * @return array Extracted info
      */
     private function extract_info() {
@@ -95,8 +107,7 @@ class Admin {
             wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'bulk-page-stub-creator'));
         }
         
-        // show output
-        ob_start(); ?>
+        ?>
         <div class="wrap">
             <h2><?php esc_html_e('Bulk Page Stub Creator', 'bulk-page-stub-creator'); ?></h2>
             <h3><?php esc_html_e('Bulk Page Creation Results', 'bulk-page-stub-creator'); ?></h3>
@@ -140,7 +151,6 @@ class Admin {
             </form>        
         </div>
         <?php
-        echo wp_kses_post(ob_get_clean());   
     }
 
     /**
@@ -155,7 +165,7 @@ class Admin {
             wp_die(esc_html__('You do not have sufficient permissions to access this page.', 'bulk-page-stub-creator'));
         }
         
-        ob_start(); ?>
+        ?>
         <div class="wrap">
             <h2><div id="icon-edit-pages" class="icon32"></div> <?php esc_html_e('Bulk Page Stub Creator', 'bulk-page-stub-creator'); ?></h2>
             <?php if(BPSC_DEBUG) { ?>
@@ -166,44 +176,35 @@ class Admin {
             
             <p><?php esc_html_e("Enter the pages into the text area below, one line for the page title, one line for the url, then repeat for as many page stubs that you want to create.", 'bulk-page-stub-creator'); ?></p>
             <h4><?php esc_html_e('Example', 'bulk-page-stub-creator'); ?></h4>
-            <pre><?php echo esc_html("Some Page
-optimised-url-for-some-page
-Another Page Title Here
-custom-url-for-another-page
-Site Map
-site-map
-Contact Us
-contact-this-company"); ?></pre>
+            <pre><?php echo esc_html(self::DEMO_CONTENT); ?></pre>
             <form method="post" action="">
             <?php wp_nonce_field('bpsc_create_pages_action', 'bpsc_create_pages_nonce'); ?>
             <h4><?php esc_html_e("Bulk Create Pages", 'bulk-page-stub-creator'); ?></h4>
+            
+            <label class="description" for="bpsc_pagestocreate"><?php esc_html_e('Enter the site map data for the pages you want to create', 'bulk-page-stub-creator'); ?>:</label><br>
+            
+            <?php if($is_uneven_inputs_error) { ?>
             <p>
-                <label class="description" for="bpsc_pagestocreate"><?php esc_html_e('Enter the site map data for the pages you want to create', 'bulk-page-stub-creator'); ?>:</label><br>
-                <?php if($is_uneven_inputs_error) { ?>
-                <strong style='color: #ff0000;'><?php esc_html_e('ERROR:', 'bulk-page-stub-creator'); ?></strong> <?php esc_html_e('You have not supplied an even number of inputs.', 'bulk-page-stub-creator'); ?></p>
-                <?php } ?>
+                <strong style='color: #ff0000;'><?php esc_html_e('ERROR:', 'bulk-page-stub-creator'); ?></strong> 
+                <?php esc_html_e('You have not supplied an even number of inputs.', 'bulk-page-stub-creator'); ?>
+            </p>
+            <?php } ?>
+            
+            <div>
                 <textarea id="bpsc_pagestocreate" name="bpsc_pagestocreate" rows="20" class="large-text code"><?php 
                     if($is_uneven_inputs_error == true) { 
                         echo esc_textarea($input); 
                     } elseif (BPSC_DEBUG) { 
-                        echo esc_textarea("Some Page
-optimised-url-for-some-page
-Another Page Title Here
-custom-url-for-another-page
-Site Map
-site-map
-Contact Us
-contact-this-company"); 
+                        echo esc_textarea(self::DEMO_CONTENT); 
                     } 
                 ?></textarea>
-            </p>
-            <p>
-                <input class="button-primary" type="submit" name="save" value='<?php esc_attr_e("Create page stubs", 'bulk-page-stub-creator'); ?>' id="submitbutton" />
-            </p>
+            </div>
+            <div>
+                <input class="button-primary" type="submit" name="save" value="<?php esc_attr_e('Create page stubs', 'bulk-page-stub-creator'); ?>" id="submitbutton" />
+            </div>
             </form>
         </div>
-        <?php
-        echo wp_kses_post(ob_get_clean());    	
+        <?php 	
     }
 
     /**
